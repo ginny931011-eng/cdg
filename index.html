@@ -446,7 +446,7 @@ if (p.settled) {
       p.vx = Math.cos(angle) * (1.5 + Math.random());
       p.vy = Math.sin(angle) * (1.5 + Math.random()) - 1.2;
       p.ay = 0.07;
-      if animId = requestAnimationFrame(loop);
+     if (!animId) animId = requestAnimationFrame(loop);
     }
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size * 0.85, 0, Math.PI * 2);
