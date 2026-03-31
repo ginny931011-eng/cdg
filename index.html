@@ -183,140 +183,43 @@
     clip-path: circle(150% at var(--ox, 50%) var(--oy, 50%));
   }
 
-  /* catalogue layout */
-  .p-catalogue {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.5s ease 0.42s, transform 0.5s cubic-bezier(0.34,1.2,0.64,1) 0.42s;
-  }
-  #panel.open .p-catalogue {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* top rule */
-  .p-catalogue-rule {
-    width: 100%;
-    height: 1px;
-    background: #000;
-    flex-shrink: 0;
-    margin-top: 80px;
-  }
-
-  /* column headers row */
-  .p-col-headers {
-    display: grid;
-    grid-template-columns: 260px 1fr 260px 140px;
-    padding: 10px 48px;
-    border-bottom: 1px solid #000;
-    flex-shrink: 0;
-  }
-  .p-col-header {
-    font-size: 8px; font-weight: 900;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: #000;
-  }
-
-  /* main content row */
-  .p-row {
-    display: grid;
-    grid-template-columns: 260px 1fr 260px 140px;
-    padding: 0 48px;
-    flex: 1;
-    min-height: 0;
-    border-bottom: 1px solid #000;
-  }
-
-  /* left: product number + image */
-  .p-cell-img {
-    display: flex;
-    flex-direction: column;
-    padding: 28px 48px 28px 0;
-    border-right: 1px solid #000;
-  }
-  .p-product-no {
-    font-size: 8px; font-weight: 900;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: #000;
-    margin-bottom: 24px;
-  }
-  .p-img-box {
-    flex: 1;
-    min-height: 0;
-    background-image: var(--panel-bg, none);
-    background-size: cover;
-    background-position: center;
-    max-height: 340px;
-  }
-
-  /* middle: description */
-  .p-cell-desc {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 28px 40px;
-    border-right: 1px solid #000;
-  }
-  .p-desc-en {
-    font-size: 13px; font-weight: 900;
-    letter-spacing: 0.008em; line-height: 1.75;
-    color: #000;
-    margin-bottom: 14px;
-  }
-  .p-desc-jp {
-    font-size: 11px; font-weight: 900;
-    letter-spacing: 0.05em; line-height: 1.8;
-    color: #000;
-    opacity: 0.45;
-  }
-
-  /* right: dimensions */
-  .p-cell-dims {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 28px 32px;
-    border-right: 1px solid #000;
-  }
-  .p-dim-row {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
-    margin-bottom: 8px;
-  }
-  .p-dim-label {
-    font-size: 8px; font-weight: 900;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: #000; opacity: 0.45;
-    min-width: 22px;
-  }
-  .p-dim-val {
-    font-size: 13px; font-weight: 900;
-    letter-spacing: 0.008em;
-    color: #000;
-  }
-  .p-dim-sep {
-    font-size: 8px; font-weight: 900;
-    color: #000; opacity: 0.45;
-  }
-
-  /* far right: price */
-  .p-cell-price {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 28px 0 28px 32px;
-  }
-  .p-price {
-    font-size: 18px; font-weight: 900;
-    letter-spacing: 0.008em;
-    color: #000;
-  }
+  .p-grid-bg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px;
+}
+.p-grid-cell {
+  overflow: hidden;
+  position: relative;
+}
+.p-grid-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: center;
+  display: block;
+}
+.p-text-block {
+  position: absolute;
+  bottom: 6%;
+  right: 5%;
+  width: 22%;
+  background: #fff;
+  padding: 16px;
+  z-index: 10;
+}
+.p-text-inner {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: #000;
+}
 
   #panel-close {
     position: fixed; top: 28px; right: 38px;
@@ -350,16 +253,11 @@
 <div id="footer"><span id="hint">touch to feel the tension</span></div>
 
 <div id="panel">
-  <div class="p-img-ring"></div>
-  <div class="p-circle">
-    <div class="p-inner">
-      <p class="p-eye">Crow Impatiens</p>
-      <div class="p-rule"></div>
-      <h2 class="p-title" id="p-title"></h2>
-      <p class="p-body" id="p-body"></p>
-    </div>
+  <button id="panel-close">CLOSE</button>
+  <div class="p-grid-bg" id="p-grid-bg"></div>
+  <div class="p-text-block">
+    <div class="p-text-inner" id="p-title-block"></div>
   </div>
-  <span id="panel-close">Close</span>
 </div>
 
 <script>
@@ -405,8 +303,6 @@ const canvas   = document.getElementById('canvas');
 const ctx      = canvas.getContext('2d');
 const navLayer = document.getElementById('nav-layer');
 const panel    = document.getElementById('panel');
-const pTitle   = document.getElementById('p-title');
-const pBody    = document.getElementById('p-body');
 const pClose   = document.getElementById('panel-close');
 
 // ── canvas resize ────────────────────────────────────────
@@ -621,22 +517,35 @@ function loop() {
 
 // ── panel ────────────────────────────────────────────────
 function openPanel(i, originEl) {
-  pTitle.textContent = CONTENT[i].title;
-  pBody.textContent  = CONTENT[i].body;
+  const grid = document.getElementById('p-grid-bg');
+  grid.innerHTML = '';
 
-  // Set clip-path origin to the clicked seed dot's center
+  for (let c = 0; c < 20; c++) {
+    const cell = document.createElement('div');
+    cell.className = 'p-grid-cell';
+    const img = document.createElement('img');
+    img.src = CONTENT[i].img;
+    const rot = (Math.random() - 0.5) * 12;
+    const sc = 1.05 + Math.random() * 0.2;
+    img.style.transform = `rotate(${rot}deg) scale(${sc})`;
+    cell.appendChild(img);
+    grid.appendChild(cell);
+  }
+
+  document.getElementById('p-title-block').innerHTML = `
+    CROW IMPATIENS<br>
+    ${CONTENT[i].title}<br><br>
+    ${CONTENT[i].body}
+  `;
+
   const rect = originEl.querySelector('.dot').getBoundingClientRect();
-  const ox = ((rect.left + rect.width  / 2) / window.innerWidth  * 100).toFixed(2) + '%';
-  const oy = ((rect.top  + rect.height / 2) / window.innerHeight * 100).toFixed(2) + '%';
+  const ox = ((rect.left + rect.width / 2) / window.innerWidth * 100).toFixed(2) + '%';
+  const oy = ((rect.top + rect.height / 2) / window.innerHeight * 100).toFixed(2) + '%';
   panel.style.setProperty('--ox', ox);
   panel.style.setProperty('--oy', oy);
-  panel.style.setProperty('--panel-bg', `url(${CONTENT[i].img})`);
-
-  // Force reflow so transition fires from 0
   panel.getBoundingClientRect();
   panel.classList.add('open');
 }
-
 function closePanel() {
   panel.classList.remove('open');
 }
