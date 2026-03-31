@@ -430,6 +430,7 @@ podWrap.addEventListener('click', () => {
 
 // ── animation loop ───────────────────────────────────────
 function loop() {
+ animId = requestAnimationFrame(loop);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   let allDone = true;
@@ -446,7 +447,7 @@ if (p.settled) {
       p.vx = Math.cos(angle) * (1.5 + Math.random());
       p.vy = Math.sin(angle) * (1.5 + Math.random()) - 1.2;
       p.ay = 0.07;
-     if (!animId) animId = requestAnimationFrame(loop);
+     if (!animId) loop();
     }
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size * 0.85, 0, Math.PI * 2);
@@ -522,10 +523,11 @@ if (p.settled) {
   }
 
   if (!allDone) {
-    animId = requestAnimationFrame(loop);
-  } else {
-    animId = null;
-    // Final settled render
+  // 什麼都不用寫
+} else {
+  animId = null;
+  // Final settled render
+}
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (const p of particles) {
       if (!p.isNav) {
